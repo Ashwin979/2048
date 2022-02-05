@@ -1,4 +1,35 @@
-board =[[0,0,0,0],[2,2,2,16],[4,4,4,4],[0,25,0,2]]
+board =[[0,0,0,0],[2,2,2,2],[4,4,4,4],[0,2,0,2]]
+boardsize = 4
+def mergeonerowleft(row):
+    for j in range(boardsize -1):
+        for i in range(boardsize -1, 0, -1):
+            if row[i-1] == 0:
+               row[i-1] = row[i]
+               row[i] = 0
+    for i in range(boardsize -1):
+        if row[i] == row[i+1]:
+            row[i] *=2
+            row[i+1] = 0
+    for i in range(boardsize -1, 0, -1):
+        if row[i-1] == 0:
+            row[i-1] = row[i]
+            row[i] = 0
+    return row
+def merge_left(currentboard):
+    for i in range(boardsize):
+        currentboard[i] = mergeonerowleft(currentboard[i])
+    return currentboard
+def reverse(row):
+    new=[]
+    for i in range(boardsize -1,-1,-1):
+        new.append(row[i])
+    return new
+def merge_right(currentboard):
+    for i in range(boardsize):
+        currentboard[i] = reverse(currentboard[i])
+        currentboard[i] = mergeonerowleft(currentboard[i])
+        currentboard[i] = reverse(currentboard[i])
+    return currentboard
 def display():
     largest = board[0][0]
     for row in board:
@@ -15,4 +46,8 @@ def display():
                 output += (" " * (numspaces - len(str(num)))) + str(num) + "|"
         print(output)
     print()
+display()
+merge_left(board)
+display()
+merge_right(board)
 display()
