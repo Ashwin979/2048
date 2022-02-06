@@ -1,5 +1,7 @@
-import copy 
+import copy
+from pickle import FALSE 
 import random
+from telnetlib import GA
 
 boardsize = 4
 def display():
@@ -91,6 +93,28 @@ def addnewvalue():
     
     board[rownum][colnum] = chooseavalue()
 
+def won():
+    for rown in board:
+        if 2048 in row:
+            return True
+    return False
+
+def nomoves():
+    tempboard1 = copy.deepcopy(board)
+    tempboard2 = copy.deepcopy(board)
+    tempboard1 = merge_down(tempboard1)
+    if tempboard1 == tempboard2:
+        tempboard1 = merge_up(tempboard1)
+        if tempboard1 == tempboard2:
+            tempboard1 = merge_left(tempboard1)
+            if tempboard1 == tempboard2:
+                tempboard1 = merge_right(tempboard1)
+                if tempboard1 == tempboard2:
+                    return True
+    return False 
+
+
+
 
     
 board = []
@@ -109,13 +133,13 @@ while numwanted > 0:
        board[rownum][colnum] = chooseavalue()
        numwanted -= 1
 
-print("HAI!! Welcome to 2048 your goal is to combine values to get the number 2048,by merging the board in differnet directions.Each and every time you will need to type'1' to merge left ,'2' to merge right,'3' to merge up, and '4' to merge down.\n Here is the starting board: ")
+print("HAI!! Welcome to 2048.Your goal is to combine values to get the number 2048,by merging the board in differnet directions.\nEach and every time you will need to type'1' to merge left ,'2' to merge right,'3' to merge up, and '4' to merge down.\n Here is the starting board: ")
 display()
 
 gameover = False
 
 while not gameover:
-    move=input("which way do you want to merge")
+    move=input("Which way do you want to merge?:   ")
     
     validinput = True
     tempboard = copy.deepcopy(board)
@@ -132,10 +156,20 @@ while not gameover:
         validinput = False
 
     if not validinput:
-        print("your input was not valid,please try again by entering a valid input")
+        print("Your input was not valid,please try again by entering a valid input")
     else:
         if board == tempboard:
             print("try a different direction!!!")
         else:
-            addnewvalue()
-            display()
+            if won():
+                display()
+                print("YOU WON!!!")
+                gameover = True
+            else:
+
+                addnewvalue()
+                display()
+
+                if nomoves():
+                    print("Sorry , you have no more possible moves, you LOSE!")
+                    gameover = True
